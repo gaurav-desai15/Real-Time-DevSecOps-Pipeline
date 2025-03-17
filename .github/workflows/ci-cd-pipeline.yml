@@ -1,0 +1,44 @@
+name: .NET Build and Deploy
+
+# Trigger the workflow on push to 'main' (or 'master' depending on your branch)
+on:
+  push:
+    branches:
+      - main  # You can replace this with 'master' if you're using the master branch
+  pull_request:
+    branches:
+      - main  # Runs on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # The runner will run on Ubuntu Linux. You can also use windows-latest or macos-latest
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up .NET SDK
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0'  # You can set this to your desired .NET version
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the project
+      - name: Build the project
+        run: dotnet build --configuration Release
+
+      # Run tests
+      - name: Run tests
+        run: dotnet test --configuration Release
+
+      # Publish the app (optional: only if you want to deploy it somewhere)
+      - name: Publish the app
+        run: dotnet publish --configuration Release --output ./publish
+
+      # You can add other deployment steps here (e.g., push to Azure, AWS, etc.)
+
